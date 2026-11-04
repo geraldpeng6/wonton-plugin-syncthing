@@ -1,11 +1,11 @@
-# Syncthing：sso=proxy，网关加 X-API-Key（核心生成的密钥，等于主人的凭据）；清单没有 mcp。
-# 应用没有“用户”概念，认的是这把只属于主人的密钥。
+# Syncthing：sso=proxy，网关加 X-API-Key（核心生成的密钥，等于用户的凭据）；清单没有 mcp。
+# 应用没有“用户”概念，认的是这把只属于用户的密钥。
 SSO=proxy
 MCP=0
 
 web_assert() { grep -qi 'syncthing'; }   # 标准输入：应用真实页面
 
-identity_check() { # 自己的 REST 接口：网关带上主人的 API key 才 200，且返回本机身份
+identity_check() { # 自己的 REST 接口：网关带上用户的 API key 才 200，且返回本机身份
   local st mine anon
   st="$(web_get /rest/system/status -H 'Accept: application/json')" || { echo "/rest/system/status 失败：$st"; return 1; }
   mine="$(jq -r '.myID // empty' <<<"$st")"
