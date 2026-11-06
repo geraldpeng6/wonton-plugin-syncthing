@@ -1,7 +1,6 @@
 # Syncthing：sso=proxy，网关加 X-API-Key（核心生成的密钥，等于用户的凭据）；清单没有 mcp。
+# shellcheck shell=bash disable=SC2034
 # 应用没有“用户”概念，认的是这把只属于用户的密钥。
-SSO=proxy
-MCP=0
 
 web_assert() { grep -qi 'syncthing'; }   # 标准输入：应用真实页面
 
