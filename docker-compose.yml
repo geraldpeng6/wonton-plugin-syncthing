@@ -3,7 +3,7 @@ services:
   # 首次启动前放一份配置（已有不动），并用核心生成的用户名、密码给 Syncthing 自己的 GUI 认证设好凭据；
   # syncthing generate 负责生成证书和 bcrypt 密码。种子关掉上报、本地发现和 NAT；路由器映射不由插件管理。
   init:
-    image: &image syncthing/syncthing:2.1.7@sha256:2b71da7c0d0a91a6ae5285ad079226fecc0a365d08b27720e1f7037b018f7546
+    image: syncthing/syncthing:2.1.7@sha256:2b71da7c0d0a91a6ae5285ad079226fecc0a365d08b27720e1f7037b018f7546
     entrypoint:
       - /bin/sh
       - -c
@@ -27,7 +27,7 @@ services:
 
   syncthing:
     # 上游官方镜像，按清单列表（index）的摘要固定。Syncthing 2.1.7，MPL-2.0。
-    image: *image
+    image: syncthing/syncthing:2.1.7@sha256:2b71da7c0d0a91a6ae5285ad079226fecc0a365d08b27720e1f7037b018f7546
     depends_on:
       init:
         condition: service_completed_successfully
