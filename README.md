@@ -1,6 +1,6 @@
 # 云吞插件：Syncthing
 
-开发流程见[插件开发指南](https://github.com/geraldpeng6/wonton-docs/blob/main/develop.md)。
+开发流程见[插件开发指南](https://github.com/wontonapp/wonton-docs/blob/main/develop.md)。
 
 把 [Syncthing](https://syncthing.net/) 做成云吞插件：用户的电脑、手机和家里的主机之间同步文件。同步的文件放在
 共享文件夹里，别的插件也能用；用户在 App 里打开 Syncthing 的网页管理设备和文件夹，不用再登录一次。
