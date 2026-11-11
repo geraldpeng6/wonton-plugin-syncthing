@@ -87,8 +87,8 @@ x-wonton:
   id: net.syncthing.syncthing
   version: 0.1.1
   kind: app
-  title: { en: Syncthing }
-  description: { zh: "在你的电脑、手机和家里的主机之间同步文件", en: "Sync files between your computers, phones and your home server" }
+  title: { zh: 多设备同步（Syncthing）, en: Device Sync (Syncthing) }
+  description: { zh: "像几台设备共用一个文件夹：电脑、手机和家里的服务器之间自动同步，这边一改、那边跟着变，不经过别人的网盘。适合要在几台设备上保持同一份文件的人。", en: "Like one folder shared by all your devices: computers, phones and your home server stay in sync automatically — change it here and it changes there, without going through anyone else's cloud. For keeping the same files on several devices." }
   icon: icon.png
   notices: [NOTICE]
   screenshots:
