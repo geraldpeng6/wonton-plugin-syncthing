@@ -10,21 +10,15 @@ identity_check() { # 自己的 REST 接口：网关带上用户的 API key 才 2
   mine="$(jq -r '.myID // empty' <<<"$st")"
   [[ "$mine" =~ ^[A-Z0-9-]{10,}$ ]] || { echo "status 没有 myID：$st"; return 1; }
   # 同一接口不带会话要被拒
-  anon="$(curl -sS --noproxy '*' -o /dev/null -w '%{http_code}' "$(probe_url)/rest/system/status")"
+  anon="$(curl -sS --noproxy '*' -o /dev/null -w '%{http_code}' "$SMOKE_WEB_URL/rest/system/status")"
   [[ "$anon" != 200 ]] || { echo "匿名 /rest/system/status 也是 200"; return 1; }
 }
-
-probe_url() { printf '%s' "${SMOKE_WEB_URL%/}"; } # 套件给的 web_url 带尾斜杠，拼路径前归一化
 
 st_rest() { # <方法> <rest 路径> [curl 参数…]：带会话走网关调 Syncthing REST（网关注入 API key）
   local method="$1" path="$2"
   shift 2
   curl -sS --noproxy '*' --fail-with-body -b "${SMOKE_JAR:-}" -X "$method" -H 'Accept: application/json' \
-    "$@" "$(probe_url)/rest/$path"
-}
-
-marker_file() { # SMOKE_STATE 在套件里是状态目录（e2e 传的是标记文件本身），标记放对应路径
-  if [[ -d "$SMOKE_STATE" ]]; then printf '%s' "$SMOKE_STATE/syncthing-marker"; else printf '%s' "${SMOKE_STATE}.marker"; fi
+    "$@" "$SMOKE_WEB_URL/rest/$path"
 }
 
 # 数据：配置和同步目录都是用户数据（配置在插件数据目录，重装保留）。走应用自己的配置接口：
@@ -38,12 +32,12 @@ data_write() {
   cfg="$(jq --arg m "$marker" '(.folders[] | select(.id == "sync") | .label) = $m' <<<"$cfg")" || return 1
   st_rest PUT config -H 'Content-Type: application/json' -d "$cfg" >/dev/null ||
     { echo "PUT /rest/config 失败"; return 1; }
-  printf '%s' "$marker" >"$(marker_file)"
+  printf '%s' "$marker" >"$SMOKE_STATE"
 }
 
 data_check() {
   local marker cfg label
-  marker="$(cat "$(marker_file)" 2>/dev/null)" || { echo "没有 data_write 留下的标记"; return 1; }
+  marker="$(cat "$SMOKE_STATE" 2>/dev/null)" || { echo "没有 data_write 留下的标记"; return 1; }
   [[ -n "$marker" ]] || { echo "标记是空的"; return 1; }
   cfg="$(st_rest GET config)" || { echo "读不到 /rest/config：$cfg"; return 1; }
   label="$(jq -r '.folders[] | select(.id == "sync") | .label' <<<"$cfg")" || { echo "配置里没有 sync 文件夹"; return 1; }
